@@ -1880,6 +1880,10 @@ UniValue gettxout(const Config &config, const JSONRPCRequest &request) {
         fMempool = request.params[2].get_bool();
     }
 
+    // cs_main locked here just to preserve locking order
+    // once it is removed from writeCoin lambda it can be
+    // deleted here as well
+    LOCK(cs_main);
     CoinsDBView tipView{*pcoinsTip};
 
     auto writeCoin =
@@ -2096,6 +2100,10 @@ void gettxouts(const Config& config,
     jWriter.writeBeginObject("result");
     jWriter.writeBeginArray("txouts");
 
+    // cs_main locked here just to preserve locking order
+    // once it is removed from writeCoin lambda it can be
+    // deleted here as well
+    LOCK(cs_main);
     CoinsDBView tipView{ *pcoinsTip };
 
     auto writeCoin =
